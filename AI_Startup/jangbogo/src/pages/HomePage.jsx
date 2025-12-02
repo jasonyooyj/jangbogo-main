@@ -53,6 +53,10 @@ export default function HomePage() {
         <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
           {RECOMMENDATIONS.map((rec) => {
             const product = PRODUCTS.find(p => p.id === rec.id);
+            if (!product) {
+              console.warn('[HomePage] 추천 상품 데이터 누락', rec);
+              return null;
+            }
             return (
               <div
                 key={rec.id}
@@ -73,26 +77,44 @@ export default function HomePage() {
                 </div>
                 <h3 className="font-bold text-gray-800">{rec.name}</h3>
                 <p className="text-xs text-gray-500 mb-2">{rec.desc}</p>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-1">
                   <span className="text-red-500 font-bold text-sm">{rec.discount} 할인</span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log('[HomePage] AI 추천 네비게이션 클릭', {
-                        productId: product.id,
-                        name: product.name,
-                        section: product.section,
-                        location: product.location,
-                      });
-                      navigate('/map', {
-                        state: { targetProducts: [product] },
-                      });
-                    }}
-                    className="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors"
-                  >
-                    <Navigation size={16} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log('[HomePage] AI 추천 장바구니 추가 클릭', {
+                          productId: product.id,
+                          name: product.name,
+                          price: product.price,
+                        });
+                        addToCart(product);
+                        alert(`${product.name}이(가) 장바구니에 담겼습니다.`);
+                      }}
+                      className="bg-gray-100 text-gray-600 p-2 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+                    >
+                      <ShoppingCart size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log('[HomePage] AI 추천 네비게이션 클릭', {
+                          productId: product.id,
+                          name: product.name,
+                          section: product.section,
+                          location: product.location,
+                        });
+                        navigate('/map', {
+                          state: { targetProducts: [product] },
+                        });
+                      }}
+                      className="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors"
+                    >
+                      <Navigation size={16} />
+                    </button>
+                  </div>
                 </div>
               </div>
             );
