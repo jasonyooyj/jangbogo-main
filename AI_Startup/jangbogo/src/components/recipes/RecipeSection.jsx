@@ -8,12 +8,8 @@ export default function RecipeSection() {
     const navigate = useNavigate();
 
     const handleRecipeClick = (recipe) => {
-        // YouTube 링크가 있으면 YouTube로 이동, 없으면 Detail Page로 이동
-        if (recipe.videoUrl) {
-            window.open(recipe.videoUrl, '_blank');
-        } else {
-            navigate(`/recipe/${recipe.id}`);
-        }
+        // 항상 레시피 상세 페이지로 이동하여 좌측에 영상, 우측에 재료/장바구니/위치 정보를 함께 보여줌
+        navigate(`/recipe/${recipe.id}`);
     };
 
     return (
