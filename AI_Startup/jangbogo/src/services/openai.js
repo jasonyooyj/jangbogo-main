@@ -1,10 +1,28 @@
 import OpenAI from 'openai';
 import { PRODUCTS, RECIPES } from '../data/mockData';
 
-const openai = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true // Note: This is for client-side demo only
-});
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
+let openaiClient = null;
+
+const getOpenAIClient = () => {
+    if (!apiKey) {
+        console.warn(
+            '[OpenAI] VITE_OPENAI_API_KEY is missing. ' +
+            'Set it in your .env (for local) or in the deployment platform environment variables.'
+        );
+        return null;
+    }
+
+    if (!openaiClient) {
+        openaiClient = new OpenAI({
+            apiKey,
+            dangerouslyAllowBrowser: true // Note: This is for client-side demo only
+        });
+    }
+
+    return openaiClient;
+};
 
 const SYSTEM_PROMPT = `
 You are a helpful shopping assistant for a grocery store named "Jangbogo".
@@ -74,7 +92,17 @@ const removeJsonBlock = (text) => {
 
 export const getChatResponse = async (messages) => {
     try {
-        const completion = await openai.chat.completions.create({
+        const client = getOpenAIClient();
+
+        if (!client) {
+            return {
+                text: "죄송합니다. AI 서비스 연결에 필요한 설정이 되어 있지 않습니다. 관리자에게 OpenAI 설정을 확인해 달라고 요청해주세요.",
+                productIds: [],
+                recipeId: null
+            };
+        }
+
+        const completion = await client.chat.completions.create({
             messages: [
                 { role: 'system', content: SYSTEM_PROMPT },
                 ...messages
