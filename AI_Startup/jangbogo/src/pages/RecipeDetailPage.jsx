@@ -75,6 +75,12 @@ export default function RecipeDetailPage() {
 
     const handleBulkAdd = () => {
         const itemsToAdd = mergedItems.filter(item => selectedItems.has(item.id));
+        console.log('[RecipeDetailPage] 장바구니 담기 클릭', {
+            recipeId: recipe.id,
+            title: recipe.title,
+            selectedCount: itemsToAdd.length,
+            itemIds: itemsToAdd.map(i => i.id),
+        });
         itemsToAdd.forEach(item => addToCart(item));
         // Optional: Show toast or feedback
         alert(`${itemsToAdd.length}개 상품이 장바구니에 담겼습니다.`);
@@ -229,9 +235,22 @@ export default function RecipeDetailPage() {
             {/* Bottom Floating Bar */}
             <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 safe-area-bottom shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-20">
                 <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-600 whitespace-nowrap">
                         총 <span className="font-bold text-blue-600">{selectedItems.size}</span>개 선택됨
                     </div>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            console.log('[RecipeDetailPage] 장바구니로 이동 클릭', {
+                                recipeId: recipe.id,
+                                title: recipe.title,
+                            });
+                            navigate('/cart');
+                        }}
+                        className="px-3 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 whitespace-nowrap"
+                    >
+                        장바구니로 이동
+                    </button>
                     <button
                         onClick={handleBulkAdd}
                         disabled={selectedItems.size === 0}

@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, X, Plus, Minus, Scan } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 
 export default function CartPage() {
+  const navigate = useNavigate();
   const { cart, cartTotal, updateQty, removeFromCart } = useCart();
 
   return (
@@ -18,7 +20,15 @@ export default function CartPage() {
           <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-4">
             <ShoppingCart size={64} strokeWidth={1} />
             <p>장바구니가 비어있습니다.</p>
-            <button className="text-blue-500 text-sm font-bold">상품 둘러보기</button>
+            <button 
+              onClick={() => {
+                console.log('[CartPage] 상품 둘러보기 클릭');
+                navigate('/');
+              }}
+              className="text-blue-500 text-sm font-bold hover:text-blue-600 transition-colors"
+            >
+              상품 둘러보기
+            </button>
           </div>
         ) : (
           cart.map(item => (
