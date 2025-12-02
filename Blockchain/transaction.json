@@ -1,0 +1,65 @@
+[
+    {
+        "txid": "abcd1234efgh5678ijkl9012mnop3456qrst7890uvwx1234yzab5678cdef9012",
+        "input": [
+            {
+                "utxo": {
+                    "txid": "1234567890",
+                    "outputIdx": 0,
+                    "amount": 100,
+                    "lockingScript": "OP_DUP|OP_HASH160|80d3533e1cedb869f47d9156078f7e3a03342eee|OP_EQUALVERIFY|OP_CHECKSIG"
+                },
+                "unlockingScript": "2c8298722a0a6c12cd1be04832d32880c1b594f1a990f9239f9284f85afd5842e7211905791f473bd1c7c9a5683ec83631ad8a1d4280915eacd212e49f86203b|029b4fd5675dbd4445a1fba23030ba1c11244b8bf24b4bd9f53cd4a8be9ae47d02"
+            }
+        ],
+        "output": [
+            {
+                "outputIdx": 0,
+                "amount": 90,
+                "lockingScript": "OP_DUP|OP_HASH160|ce91543a11dcf3cce7d5cf0b93de31a0d6f02709|OP_EQUALVERIFY|OP_CHECKSIG"
+            }
+        ]
+    },
+    {
+        "txid": "mnop3456qrst7890uvwx1234yzab5678cdef9012abcd1234efgh5678ijkl9012",
+        "input": [
+            {
+                "utxo": {
+                    "txid": "0987654321",
+                    "outputIdx": 1,
+                    "amount": 50,
+                    "lockingScript": "OP_DUP|OP_HASH160|d705eaa8564f24dc4543c3b8fb8b46f38826f314|OP_EQUALVERIFY"
+                },
+                "unlockingScript": "02359cab35e02e92a9b12e24f1aa57256f8045c866cbbbeedada704a18d97efc0d OP_CHECKSIG"
+            }
+        ],
+        "output": [
+            {
+                "outputIdx": 0,
+                "amount": 45,
+                "lockingScript": "OP_DUP|OP_HASH160|93aa2e7f2d9b6e35e5f7b9c992e74337e1a1674d|OP_EQUALVERIFY|OP_CHECKSIG"
+            }
+        ]
+    },
+    {
+        "txid": "ijkl9012mnop3456qrst7890uvwx1234yzab5678cdef9012abcd1234efgh5678",
+        "input": [
+            {
+                "utxo": {
+                    "txid": "1122334455",
+                    "outputIdx": 2,
+                    "amount": 75,
+                    "lockingScript": "2|032e1df9d805dfd60ba63d8f250f157445caba940c97a430a78b415576093da0af|027b31d97a4d789eaea53de08e1ff149460feabb591fce855329bc8b2d969729d4|02adb0edd48fe1ef02ceea01c303fe6d4996823f453f88c02470dab350e2bd6475|3|OP_CHECKMULTISIG"
+                },
+                "unlockingScript": "bc0b46cf26ca8d9381ed1addf24581918b62e60c44013e251117411f5273961a3d36d182a93823d901b6e43c7869a5010b27783a5f7272dcc17e17490c6bd90a|561bb71e3d8f0c0b880a64804323073f673107b2d3b12a0fadbc074f987e267a3977ac436ee82972ebb3ad3502b34356949b34178b298bda32f8d105b1a4e2ad"
+            }
+        ],
+        "output": [
+            {
+                "outputIdx": 0,
+                "amount": 70,
+                "lockingScript": "OP_DUP|OP_HASH160|e4dc17740f79caa8db3a52394be781eb7ea988f6|OP_EQUALVERIFY|OP_CHECKSIG"
+            }
+        ]
+    }
+]
