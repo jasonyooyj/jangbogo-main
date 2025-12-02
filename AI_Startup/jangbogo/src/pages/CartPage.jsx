@@ -29,8 +29,11 @@ export default function CartPage() {
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-1">
                   <h3 className="font-bold text-gray-800">{item.name}</h3>
-                  <button onClick={() => removeFromCart(item.id)} className="text-gray-400 hover:text-red-500">
-                    <X size={18} />
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                  >
+                    <X size={22} />
                   </button>
                 </div>
                 <p className="text-sm text-gray-500 mb-3">{item.price.toLocaleString()}원</p>

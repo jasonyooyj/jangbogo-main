@@ -76,6 +76,21 @@ export default function ProductDetailPage() {
                         <div className="text-2xl font-bold text-gray-900">
                             {product.price.toLocaleString()}원
                         </div>
+                        <button
+                            onClick={() => {
+                                console.log('[ProductDetailPage] 위치찾기 클릭', {
+                                    productId: product.id,
+                                    name: product.name,
+                                    section: product.section,
+                                    location: product.location,
+                                });
+                                navigate('/map', { state: { targetProducts: [product] } });
+                            }}
+                            className="mt-4 inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors"
+                        >
+                            매장 위치 찾기
+                            <ChevronRight size={16} />
+                        </button>
                     </div>
                 </div>
 

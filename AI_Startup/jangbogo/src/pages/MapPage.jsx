@@ -225,23 +225,18 @@ export default function MapPage() {
               })}
             </svg>
           )}
-
-          {/* 안내 대상이 없고 사용자 지정 목적지도 없을 때 빈 상태 안내 */}
-          {targetProducts.length === 0 && !customTarget && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-gray-400 text-sm px-6">
-              <div className="mb-2 text-3xl">🗺️</div>
-              <p className="font-semibold mb-1">안내 중인 상품이 없습니다.</p>
-              <p className="text-xs">
-                AI에게 상품을 물어보거나, 지도를 터치해서 직접 목적지를 설정해 보세요.
-              </p>
-            </div>
-          )}
         </div>
 
         <div className="absolute bottom-6 left-0 w-full px-6 flex justify-center">
           <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow-md text-xs text-gray-600 flex items-center gap-2">
             <Navigation size={12} />
-            <span>{targetProducts.length > 1 ? '최적의 쇼핑 동선을 안내합니다.' : '지도를 터치하여 목적지를 직접 설정할 수도 있습니다.'}</span>
+            <span>
+              {targetProducts.length === 0
+                ? '안내 중인 상품이 없습니다. 지도를 터치해서 직접 목적지를 설정해 보세요.'
+                : targetProducts.length > 1
+                  ? '최적의 쇼핑 동선을 안내합니다.'
+                  : '선택한 상품까지 이동 경로를 안내합니다.'}
+            </span>
           </div>
         </div>
       </div>

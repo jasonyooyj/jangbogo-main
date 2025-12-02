@@ -54,7 +54,11 @@ export default function HomePage() {
           {RECOMMENDATIONS.map((rec) => {
             const product = PRODUCTS.find(p => p.id === rec.id);
             return (
-              <div key={rec.id} className="min-w-[200px] bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+              <div
+                key={rec.id}
+                onClick={() => handleNavigate(product)}
+                className="min-w-[200px] bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
+              >
                 <div className="h-24 bg-gray-100 rounded-xl mb-3 overflow-hidden">
                   {product.image && !imageErrors[product.id] ? (
                     <img 
@@ -71,12 +75,11 @@ export default function HomePage() {
                 <p className="text-xs text-gray-500 mb-2">{rec.desc}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-red-500 font-bold text-sm">{rec.discount} 할인</span>
-                  <button
-                    onClick={() => handleNavigate(product)}
-                    className="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors"
+                  <div
+                    className="bg-blue-100 text-blue-600 p-2 rounded-lg"
                   >
                     <Navigation size={16} />
-                  </button>
+                  </div>
                 </div>
               </div>
             );
