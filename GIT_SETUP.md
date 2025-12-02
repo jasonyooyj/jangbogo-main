@@ -69,3 +69,4 @@ Vercel에서 배포할 때:
 - Root Directory가 `AI_Startup/jangbogo`로 설정되어 있는지 확인
 - Vercel Dashboard → 프로젝트 → Settings → General → Root Directory 확인
 
+

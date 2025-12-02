@@ -6,7 +6,7 @@ export const PRODUCTS = [
   { id: 5, name: '한우 등심 1++', price: 45000, category: 'Meat', location: { x: 50, y: 20 }, section: 'A2', image: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=100&q=80' },
   { id: 6, name: '감자칩', price: 2000, category: 'Snack', location: { x: 50, y: 80 }, section: 'D2', image: 'https://plus.unsplash.com/premium_photo-1672753747124-2bd4da9931fa?auto=format&fit=crop&w=800&q=80' },
   // Tteokbokki Ingredients
-  { id: 7, name: '떡볶이 떡', price: 3500, category: 'Fresh', location: { x: 15, y: 15 }, section: 'A1', image: 'https://img-cf.kurly.com/hdims/resize/%3E720x/quality/90/src/shop/data/goodsview/20221020/gv10000438072_1.jpg' },
+  { id: 7, name: '떡볶이 떡', price: 3500, category: 'Fresh', location: { x: 15, y: 15 }, section: 'A1', image: 'https://cdn.pixabay.com/photo/2018/11/22/23/49/korean-food-3832308_1280.jpg' },
   { id: 8, name: '사각 어묵', price: 2000, category: 'Fresh', location: { x: 85, y: 15 }, section: 'A2', image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=100&q=80' },
   { id: 9, name: '대파', price: 1500, category: 'Produce', location: { x: 80, y: 25 }, section: 'A1', image: 'https://images.unsplash.com/photo-1618888007540-2bdead974bbb?auto=format&fit=crop&w=100&q=80' },
   { id: 10, name: '고추장', price: 6500, category: 'Condiment', location: { x: 30, y: 50 }, section: 'B1', image: 'https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?auto=format&fit=crop&w=100&q=80' },

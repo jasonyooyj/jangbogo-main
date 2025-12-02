@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Mic, MapIcon, Scan, Navigation, ChevronRight, ShoppingCart } from 'lucide-react';
 import RecipeSection from '../components/recipes/RecipeSection';
 import { PRODUCTS, RECOMMENDATIONS, PAST_PURCHASES } from '../data/mockData';
+import { useCart } from '../contexts/CartContext';
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [imageErrors, setImageErrors] = useState({});
 
   const handleImageError = (productId, imageUrl) => {
@@ -108,7 +110,15 @@ export default function HomePage() {
               <div className="mt-auto flex items-center justify-between">
                 <span className="font-bold text-blue-600 text-sm">{item.product.price.toLocaleString()}원</span>
                 <button
-                  onClick={() => alert(`${item.product.name}이(가) 장바구니에 담겼습니다.`)}
+                  onClick={() => {
+                    console.log('[지난 장보기] 장바구니 추가 클릭', {
+                      productId: item.product.id,
+                      name: item.product.name,
+                      price: item.product.price,
+                    });
+                    addToCart(item.product);
+                    alert(`${item.product.name}이(가) 장바구니에 담겼습니다.`);
+                  }}
                   className="bg-gray-100 text-gray-600 p-2 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
                 >
                   <ShoppingCart size={14} />
