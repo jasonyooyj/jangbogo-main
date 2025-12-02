@@ -10,7 +10,7 @@ export default function RecipeDetailPage() {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [servings, setServings] = useState(2); // Default 2 servings
+    const [servings, setServings] = useState(2); // Default 2 servings (모든 스케일 계산의 기준)
     const [selectedItems, setSelectedItems] = useState(new Set());
 
     const recipe = RECIPES.find(r => r.id === parseInt(id));
@@ -21,8 +21,17 @@ export default function RecipeDetailPage() {
 
     const adjustServings = (delta) => {
         const newServings = servings + delta;
-        if (newServings >= 1) setServings(newServings);
+        if (newServings >= 1) {
+            console.log('[RecipeDetailPage] 인분 변경', {
+                before: servings,
+                after: newServings,
+            });
+            setServings(newServings);
+        }
     };
+
+    // 기준 인분 (재료 스케일과 동일하게 2인분 기준)
+    const BASE_SERVINGS = 2;
 
     // Helper to calculate ingredient amount
     const getAmount = (baseAmount) => {
@@ -32,12 +41,16 @@ export default function RecipeDetailPage() {
         if (match) {
             const val = parseInt(match[1]);
             const unit = match[2];
-            // Assuming base data is for 2 servings (common).
-            const baseServings = 2;
-            const scaled = Math.round((val / baseServings) * servings * 10) / 10;
+            const scaled = Math.round((val / BASE_SERVINGS) * servings * 10) / 10;
             return `${scaled}${unit}`;
         }
         return baseAmount; // Fallback for non-numeric amounts like "Salt to taste"
+    };
+
+    // Helper to calculate scaled price by servings
+    const getScaledPrice = (basePrice) => {
+        const scaled = Math.round((basePrice / BASE_SERVINGS) * servings);
+        return scaled;
     };
 
     // Merge products with ingredients
@@ -81,7 +94,20 @@ export default function RecipeDetailPage() {
             selectedCount: itemsToAdd.length,
             itemIds: itemsToAdd.map(i => i.id),
         });
-        itemsToAdd.forEach(item => addToCart(item));
+        itemsToAdd.forEach(item => {
+            const scaledPrice = getScaledPrice(item.price);
+            console.log('[RecipeDetailPage] 인분 스케일 적용 후 장바구니 추가', {
+                productId: item.id,
+                name: item.name,
+                basePrice: item.price,
+                servings,
+                scaledPrice,
+            });
+            addToCart({
+                ...item,
+                price: scaledPrice,
+            });
+        });
         // Optional: Show toast or feedback
         alert(`${itemsToAdd.length}개 상품이 장바구니에 담겼습니다.`);
     };
@@ -199,7 +225,9 @@ export default function RecipeDetailPage() {
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-blue-600 font-bold mt-1">{item.price.toLocaleString()}원</p>
+                                            <p className="text-blue-600 font-bold mt-1">
+                                                {getScaledPrice(item.price).toLocaleString()}원
+                                            </p>
                                         </div>
 
                                         {/* Location Button */}
@@ -232,8 +260,8 @@ export default function RecipeDetailPage() {
                 </div>
             </div>
 
-            {/* Bottom Floating Bar */}
-            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 safe-area-bottom shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-20">
+            {/* Bottom Floating Bar - Footer(특히 AI 대화 아이콘)를 덮지 않도록 z-index는 Footer보다 낮게 유지 */}
+            <div className="fixed bottom-20 left-0 w-full bg-white border-t border-gray-200 p-4 safe-area-bottom shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-10">
                 <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
                     <div className="text-sm text-gray-600 whitespace-nowrap">
                         총 <span className="font-bold text-blue-600">{selectedItems.size}</span>개 선택됨

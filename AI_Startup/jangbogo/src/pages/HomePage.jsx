@@ -75,11 +75,24 @@ export default function HomePage() {
                 <p className="text-xs text-gray-500 mb-2">{rec.desc}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-red-500 font-bold text-sm">{rec.discount} 할인</span>
-                  <div
-                    className="bg-blue-100 text-blue-600 p-2 rounded-lg"
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('[HomePage] AI 추천 네비게이션 클릭', {
+                        productId: product.id,
+                        name: product.name,
+                        section: product.section,
+                        location: product.location,
+                      });
+                      navigate('/map', {
+                        state: { targetProducts: [product] },
+                      });
+                    }}
+                    className="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors"
                   >
                     <Navigation size={16} />
-                  </div>
+                  </button>
                 </div>
               </div>
             );
