@@ -2,8 +2,9 @@
 
 ## 현재 상태
 - ✅ Git 저장소 초기화 완료
-- ✅ 모든 파일 커밋 완료 (140개 파일)
+- ✅ 모든 파일 커밋 완료 (142개 파일, 2개 커밋)
 - ✅ .env 파일은 Git에서 무시됨 (안전)
+- ✅ 연결 스크립트 준비 완료 (`connect_github.sh`)
 - ⏳ GitHub 저장소 연결 필요
 
 ## 다음 단계: GitHub 연결
@@ -27,9 +28,20 @@
    git push -u origin main
    ```
 
-### 방법 2: 저장소 URL이 있는 경우
+### 방법 2: 연결 스크립트 사용 (가장 간단!)
 
-GitHub 저장소 URL을 알고 있다면:
+저장소 URL만 있으면 스크립트가 자동으로 연결합니다:
+
+```bash
+cd "/Users/yoo/Library/Mobile Documents/com~apple~CloudDocs/00 University/25-2 (3학년 2학기)/AI활용과 스타트업/Hongik-main"
+./connect_github.sh
+```
+
+스크립트가 저장소 URL을 물어보면 입력하세요.
+
+### 방법 3: 수동으로 명령어 실행
+
+저장소 URL이 있는 경우 직접 실행:
 
 ```bash
 cd "/Users/yoo/Library/Mobile Documents/com~apple~CloudDocs/00 University/25-2 (3학년 2학기)/AI활용과 스타트업/Hongik-main"
