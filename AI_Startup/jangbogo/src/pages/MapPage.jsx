@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Map as MapIcon, ShoppingCart, Navigation } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 export default function MapPage() {
   const location = useLocation();
+  const { addToCart } = useCart();
   // Support both single targetProduct (legacy) and targetProducts array
   const initialProducts = location.state?.targetProducts || (location.state?.targetProduct ? [location.state.targetProduct] : []);
 
@@ -99,22 +101,43 @@ export default function MapPage() {
 
       {/* 현재 안내 상품 리스트 (간단 요약) */}
       {targetProducts.length > 0 && (
-        <div className="px-4 pt-2 pb-1 bg-white border-b text-xs text-gray-600">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+        <div className="px-4 pt-2 pb-2 bg-white border-b">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar items-center">
             {targetProducts.map((p, index) => {
               const isActive = index === currentStep && !customTarget;
               return (
                 <div
                   key={p.id}
-                  className={`px-2 py-1 rounded-full border whitespace-nowrap ${
+                  className={`px-2 py-1 rounded-full border whitespace-nowrap flex items-center gap-1.5 ${
                     isActive
                       ? 'bg-blue-600 text-white border-blue-600'
                       : 'bg-gray-50 text-gray-700 border-gray-200'
                   }`}
                 >
                   <span className="font-semibold mr-1">{index + 1}.</span>
-                  <span>{p.name}</span>
+                  <span className="text-xs">{p.name}</span>
                   <span className="ml-1 text-[10px] text-gray-300">{p.section}</span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('[MapPage] 장바구니 추가 클릭', {
+                        productId: p.id,
+                        name: p.name,
+                        price: p.price,
+                      });
+                      addToCart(p);
+                      alert(`${p.name}이(가) 장바구니에 담겼습니다.`);
+                    }}
+                    className={`ml-1 p-1 rounded hover:opacity-80 transition-opacity ${
+                      isActive
+                        ? 'bg-white/20 hover:bg-white/30'
+                        : 'bg-gray-200 hover:bg-gray-300'
+                    }`}
+                    title="장바구니에 담기"
+                  >
+                    <ShoppingCart size={12} />
+                  </button>
                 </div>
               );
             })}
