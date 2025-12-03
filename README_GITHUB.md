@@ -39,3 +39,4 @@ cd "/Users/yoo/Library/Mobile Documents/com~apple~CloudDocs/00 University/25-2 (
 GitHub 연결 완료 후 → [Vercel 배포](./AI_Startup/jangbogo/DEPLOYMENT.md) 진행
 
 
+

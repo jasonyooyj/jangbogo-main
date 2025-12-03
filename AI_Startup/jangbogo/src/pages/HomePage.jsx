@@ -130,7 +130,11 @@ export default function HomePage() {
         </div>
         <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
           {PAST_PURCHASES.map((item) => (
-            <div key={item.id} className="min-w-[160px] bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col">
+            <div 
+              key={item.id} 
+              onClick={() => handleNavigate(item.product)}
+              className="min-w-[160px] bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col cursor-pointer hover:shadow-md transition-shadow"
+            >
               <div className="h-20 bg-gray-50 rounded-xl mb-3 overflow-hidden">
                 {item.product.image && !imageErrors[item.product.id] ? (
                   <img 
@@ -148,7 +152,9 @@ export default function HomePage() {
               <div className="mt-auto flex items-center justify-between">
                 <span className="font-bold text-blue-600 text-sm">{item.product.price.toLocaleString()}원</span>
                 <button
-                  onClick={() => {
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
                     console.log('[지난 장보기] 장바구니 추가 클릭', {
                       productId: item.product.id,
                       name: item.product.name,

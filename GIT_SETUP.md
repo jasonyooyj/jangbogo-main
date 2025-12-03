@@ -70,3 +70,4 @@ Vercel에서 배포할 때:
 - Vercel Dashboard → 프로젝트 → Settings → General → Root Directory 확인
 
 
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, MapPin, Plus, Minus, Users, Check } from 'lucide-react';
 import { RECIPES, PRODUCTS } from '../data/mockData';
@@ -53,28 +53,36 @@ export default function RecipeDetailPage() {
         return scaled;
     };
 
-    // Merge products with ingredients
-    const mergedItems = recipe.relatedProductIds.map(id => {
-        const product = PRODUCTS.find(p => p.id === id);
-        if (!product) return null;
+    // Merge products with ingredients (memoized to prevent unnecessary recalculations)
+    const mergedItems = useMemo(() => {
+        if (!recipe || !recipe.relatedProductIds) return [];
+        return recipe.relatedProductIds.map(id => {
+            const product = PRODUCTS.find(p => p.id === id);
+            if (!product) return null;
 
-        // Find matching ingredient to show amount
-        const matchingIngredient = recipe.ingredients.find(ing =>
-            product.name.includes(ing.name) || ing.name.includes(product.name)
-        );
+            // Find matching ingredient to show amount
+            const matchingIngredient = recipe.ingredients.find(ing =>
+                product.name.includes(ing.name) || ing.name.includes(product.name)
+            );
 
-        return {
-            ...product,
-            requiredAmount: matchingIngredient ? getAmount(matchingIngredient.amount) : null
-        };
-    }).filter(Boolean);
+            return {
+                ...product,
+                requiredAmount: matchingIngredient ? getAmount(matchingIngredient.amount) : null
+            };
+        }).filter(Boolean);
+    }, [recipe, servings]); // Recalculate when recipe or servings change
 
-    // Initialize selection
+    // Initialize selection when mergedItems change
     useEffect(() => {
         if (mergedItems.length > 0) {
+            console.log('[RecipeDetailPage] 선택 항목 초기화', {
+                recipeId: recipe?.id,
+                mergedItemsCount: mergedItems.length,
+                itemIds: mergedItems.map(i => i.id),
+            });
             setSelectedItems(new Set(mergedItems.map(i => i.id)));
         }
-    }, [id, servings]); // Re-select when recipe changes
+    }, [mergedItems]); // Re-select when mergedItems changes
 
     const toggleSelection = (productId) => {
         const newSet = new Set(selectedItems);
