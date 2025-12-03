@@ -261,7 +261,7 @@ export default function ChatPage() {
               className="w-full h-full bg-gray-100 rounded-full pl-5 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             />
             <button
-              onClick={() => handleSend("오늘 저녁 메뉴 추천해줘")}
+              onClick={() => handleSend()}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm"
             >
               <Mic size={16} />
