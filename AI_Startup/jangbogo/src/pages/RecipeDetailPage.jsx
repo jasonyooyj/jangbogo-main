@@ -120,6 +120,22 @@ export default function RecipeDetailPage() {
         alert(`${itemsToAdd.length}개 상품이 장바구니에 담겼습니다.`);
     };
 
+    const handleNavigateProduct = (product) => {
+        if (!product?.location) {
+            console.warn('[RecipeDetailPage] 위치 정보 없음 - 길안내 불가', { productId: product?.id, name: product?.name });
+            alert('해당 상품의 위치 정보가 없어 길안내를 제공할 수 없습니다.');
+            return;
+        }
+        console.log('[RecipeDetailPage] 위치 안내 모달 → 길안내 시작', {
+            productId: product.id,
+            name: product.name,
+            section: product.section,
+            location: product.location,
+        });
+        navigate('/map', { state: { targetProducts: [product] } });
+        setSelectedProduct(null);
+    };
+
     const handleSelectAll = () => {
         if (selectedItems.size === mergedItems.length) {
             setSelectedItems(new Set());
@@ -303,6 +319,7 @@ export default function RecipeDetailPage() {
                 <ProductLocationModal
                     product={selectedProduct}
                     onClose={() => setSelectedProduct(null)}
+                    onNavigate={handleNavigateProduct}
                 />
             )}
         </div>

@@ -126,6 +126,8 @@ const removeJsonBlock = (text) => {
 
 export const getChatResponse = async (messages) => {
     try {
+        console.info('[OpenAI] has apiKey:', Boolean(apiKey));
+
         const client = getOpenAIClient();
 
         if (!client) {
@@ -158,7 +160,13 @@ export const getChatResponse = async (messages) => {
             recipeId: recipeId
         };
     } catch (error) {
-        console.error('OpenAI API Error:', error);
+        console.error('OpenAI API Error:', {
+            status: error?.status || error?.response?.status,
+            statusText: error?.response?.statusText,
+            code: error?.code,
+            message: error?.message,
+            data: error?.response?.data
+        });
         return {
             text: "죄송합니다. AI 서비스 연결에 문제가 발생했습니다.",
             productIds: [],

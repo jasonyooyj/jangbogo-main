@@ -1,11 +1,27 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, X, Plus, Minus, Scan } from 'lucide-react';
+import { ShoppingCart, X, Plus, Minus, Scan, Navigation } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 
 export default function CartPage() {
   const navigate = useNavigate();
   const { cart, cartTotal, updateQty, removeFromCart } = useCart();
+
+  const handleNavigateToMap = (item) => {
+    if (!item?.location) {
+      console.warn('[CartPage] 위치 정보 없음 - 길안내 불가', { productId: item?.id, name: item?.name });
+      alert('해당 상품의 위치 정보가 없어 길안내를 제공할 수 없습니다.');
+      return;
+    }
+
+    console.log('[CartPage] 길안내 클릭', {
+      productId: item.id,
+      name: item.name,
+      section: item.section,
+      location: item.location,
+    });
+    navigate('/map', { state: { targetProducts: [item] } });
+  };
 
   return (
     <div className="h-full flex flex-col bg-gray-50">
@@ -47,13 +63,21 @@ export default function CartPage() {
                   </button>
                 </div>
                 <p className="text-sm text-gray-500 mb-3">{item.price.toLocaleString()}원</p>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                   <button onClick={() => updateQty(item.id, -1)} className="p-1 rounded-full bg-gray-100 hover:bg-gray-200">
                     <Minus size={14} />
                   </button>
                   <span className="font-bold text-sm w-6 text-center">{item.qty}</span>
                   <button onClick={() => updateQty(item.id, 1)} className="p-1 rounded-full bg-gray-100 hover:bg-gray-200">
                     <Plus size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleNavigateToMap(item)}
+                    className="ml-1 inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-600 text-xs font-semibold rounded-lg hover:bg-blue-100 transition-colors"
+                  >
+                    <Navigation size={14} />
+                    길안내
                   </button>
                 </div>
               </div>

@@ -1,8 +1,13 @@
 import React from 'react';
-import { X, MapPin } from 'lucide-react';
+import { X, MapPin, Navigation } from 'lucide-react';
 
-export default function ProductLocationModal({ product, onClose }) {
+export default function ProductLocationModal({ product, onClose, onNavigate }) {
     if (!product) return null;
+
+    const handleNavigate = () => {
+        onNavigate?.(product);
+        onClose?.();
+    };
 
     return (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fade-in">
@@ -31,10 +36,11 @@ export default function ProductLocationModal({ product, onClose }) {
                     </div>
 
                     <button
-                        onClick={onClose}
-                        className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors"
+                        onClick={handleNavigate}
+                        className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                     >
-                        확인
+                        <Navigation size={18} />
+                        자동 길안내 시작
                     </button>
                 </div>
             </div>

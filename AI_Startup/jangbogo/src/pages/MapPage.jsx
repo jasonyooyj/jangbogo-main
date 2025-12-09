@@ -4,6 +4,16 @@ import { Map as MapIcon, ShoppingCart, Navigation } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 
 export default function MapPage() {
+  const SECTION_RECTS = [
+    { name: 'A', rect: { x1: 10, y1: 10, x2: 45, y2: 30 } }, // 신선식품
+    { name: 'A2', rect: { x1: 55, y1: 10, x2: 90, y2: 30 } }, // 정육/수산
+    { name: 'B', rect: { x1: 10, y1: 40, x2: 30, y2: 70 } }, // 베이커리
+    { name: 'C', rect: { x1: 40, y1: 40, x2: 60, y2: 70 } }, // 유제품
+    { name: 'D', rect: { x1: 70, y1: 40, x2: 90, y2: 70 } }, // 스낵/음료
+  ];
+  const GRID_STEPS = 40; // 격자 해상도 (값이 높을수록 경로가 부드러움)
+  const GRID_STEP_SIZE = 100 / GRID_STEPS;
+
   const location = useLocation();
   const { addToCart } = useCart();
   // Support both single targetProduct (legacy) and targetProducts array
@@ -15,55 +25,178 @@ export default function MapPage() {
   const userPos = useRef({ x: 50, y: 95 });
   const [customTarget, setCustomTarget] = useState(null); // 사용자 지정 목적지
   const mapRef = useRef(null);
+  const [pathPoints, setPathPoints] = useState([{ ...userPos.current }]);
+  const [pathIndex, setPathIndex] = useState(0);
+  const [arrivalIndices, setArrivalIndices] = useState([]); // 각 목적지 도달 지점 인덱스
 
   // 초기 상태 로그
   useEffect(() => {
     console.log('[MapPage] 진입 - initialProducts:', initialProducts);
   }, [initialProducts]);
 
-  useEffect(() => {
-    if (targetProducts.length > 0) {
-      console.log('[MapPage] 안내 시작 - targetProducts:', targetProducts);
-      setIsMoving(true);
-      // Simulate moving through products
-      const stepDuration = 2000;
-      const totalDuration = targetProducts.length * stepDuration;
+  const clampPct = (v) => Math.min(100, Math.max(0, v));
 
-      const interval = setInterval(() => {
-        setCurrentStep(prev => {
-          const nextStep = prev < targetProducts.length - 1 ? prev + 1 : prev;
-          if (nextStep !== prev) {
-            console.log('[MapPage] currentStep 변경:', nextStep, '->', targetProducts[nextStep]?.name);
-          }
-          if (prev < targetProducts.length - 1) return nextStep;
-          return prev;
-        });
-      }, stepDuration);
+  const pointInRect = (point, rect) =>
+    point.x >= rect.x1 &&
+    point.x <= rect.x2 &&
+    point.y >= rect.y1 &&
+    point.y <= rect.y2;
 
-      const timeout = setTimeout(() => {
-        setIsMoving(false);
-        console.log('[MapPage] 안내 종료');
-        clearInterval(interval);
-      }, totalDuration + 1000);
+  const padRect = (rect, pad = 1.5) => ({
+    x1: clampPct(rect.x1 - pad),
+    y1: clampPct(rect.y1 - pad),
+    x2: clampPct(rect.x2 + pad),
+    y2: clampPct(rect.y2 + pad),
+  });
 
-      return () => {
-        clearTimeout(timeout);
-        clearInterval(interval);
-      };
-    } else {
-      console.log('[MapPage] 안내 대상 상품 없음 (targetProducts 비어 있음)');
+  const findSectionByPoint = (point) => SECTION_RECTS.find((s) => pointInRect(point, s.rect));
+
+  const isPointBlocked = (point, allowedSectionName) =>
+    SECTION_RECTS.some((section) => {
+      if (allowedSectionName && section.name === allowedSectionName) return false; // 목적지 섹션은 통과 허용
+      const padded = padRect(section.rect, 1.5);
+      return pointInRect(point, padded);
+    });
+
+  const toCell = (point) => ({
+    cx: Math.min(GRID_STEPS, Math.max(0, Math.round(point.x / GRID_STEP_SIZE))),
+    cy: Math.min(GRID_STEPS, Math.max(0, Math.round(point.y / GRID_STEP_SIZE))),
+  });
+
+  const toPoint = (cell) => ({
+    x: clampPct(cell.cx * GRID_STEP_SIZE),
+    y: clampPct(cell.cy * GRID_STEP_SIZE),
+  });
+
+  const findPath = (startPoint, endPoint) => {
+    const allowedSection = findSectionByPoint(endPoint);
+    const start = toCell(startPoint);
+    const target = toCell(endPoint);
+    const directions = [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ];
+    const key = (cell) => `${cell.cx},${cell.cy}`;
+    const visited = new Set([key(start)]);
+    const prev = new Map();
+    const queue = [start];
+    let found = false;
+
+    while (queue.length) {
+      const cur = queue.shift();
+      if (cur.cx === target.cx && cur.cy === target.cy) {
+        found = true;
+        break;
+      }
+      directions.forEach(([dx, dy]) => {
+        const next = { cx: cur.cx + dx, cy: cur.cy + dy };
+        if (next.cx < 0 || next.cy < 0 || next.cx > GRID_STEPS || next.cy > GRID_STEPS) return;
+        const k = key(next);
+        if (visited.has(k)) return;
+        const nextPoint = toPoint(next);
+        if (isPointBlocked(nextPoint, allowedSection?.name)) return;
+        visited.add(k);
+        prev.set(k, cur);
+        queue.push(next);
+      });
     }
-  }, [targetProducts]);
+
+    if (!found) {
+      console.warn('[MapPage] 경로 계산 실패 - 직선 경로로 폴백', { from: startPoint, to: endPoint });
+      return [];
+    }
+
+    const path = [];
+    let cur = target;
+    while (cur) {
+      path.push(toPoint(cur));
+      const k = key(cur);
+      const p = prev.get(k);
+      if (!p) break;
+      cur = p;
+    }
+    return path.reverse();
+  };
+
+  // 목적지 경로 재계산
+  useEffect(() => {
+    const targets = customTarget ? [{ location: customTarget, name: '사용자 지정 위치' }] : targetProducts;
+    if (!targets || targets.length === 0) {
+      console.log('[MapPage] 안내 대상 없음 - path 초기화');
+      setPathPoints([{ ...userPos.current }]);
+      setArrivalIndices([]);
+      setPathIndex(0);
+      setCurrentStep(0);
+      setIsMoving(false);
+      return;
+    }
+
+    let cursor = { ...userPos.current };
+    const points = [{ ...cursor }];
+    const arrivals = [];
+
+    targets.forEach((t, idx) => {
+      const dest = t.location || t; // customTarget는 location이 없음
+      const segment = findPath(cursor, dest);
+      const usable = segment.length > 0 ? segment : [cursor, dest];
+      points.push(...usable.slice(1));
+      arrivals.push(points.length - 1);
+      cursor = dest;
+      if (segment.length === 0) {
+        console.warn('[MapPage] 경로 계산 실패: 섹션을 우회하지 못해 직선 사용', { target: t.name || 'custom', index: idx });
+      }
+    });
+
+    setPathPoints(points);
+    setArrivalIndices(arrivals);
+    setPathIndex(0);
+    setCurrentStep(0);
+    setIsMoving(true);
+    console.log('[MapPage] 경로 재계산 완료', {
+      waypointCount: points.length,
+      destinations: targets.length,
+      arrivals,
+      customTarget: !!customTarget,
+    });
+  }, [targetProducts, customTarget]);
+
+  // 경로를 따라 이동 애니메이션
+  useEffect(() => {
+    if (pathPoints.length <= 1) return undefined;
+    const interval = setInterval(() => {
+      setPathIndex((prev) => {
+        if (prev >= pathPoints.length - 1) return prev;
+        return prev + 1;
+      });
+    }, 600);
+    return () => clearInterval(interval);
+  }, [pathPoints]);
+
+  // 현재 단계 및 이동 상태 업데이트
+  useEffect(() => {
+    if (pathPoints.length === 0) return;
+    if (pathIndex >= pathPoints.length - 1 && isMoving) {
+      console.log('[MapPage] 안내 종료 - 경로 완료');
+      setIsMoving(false);
+    }
+
+    if (arrivalIndices.length > 0) {
+      const reached = arrivalIndices.findIndex((idx) => pathIndex <= idx);
+      const nextStep = reached === -1 ? arrivalIndices.length - 1 : Math.max(0, reached);
+      if (nextStep !== currentStep) {
+        console.log('[MapPage] currentStep 변경:', currentStep, '->', nextStep);
+        setCurrentStep(nextStep);
+      }
+    }
+  }, [pathIndex, pathPoints.length, arrivalIndices, currentStep, isMoving]);
 
   // Determine current target for animation
   const activeTargetFromProducts = targetProducts[currentStep] || targetProducts[0];
 
   // 실제 카트 위치 결정: 사용자 지정 목적지가 있으면 우선 사용
-  const cartPosition = customTarget
-    ? { x: customTarget.x, y: customTarget.y }
-    : activeTargetFromProducts && isMoving
-      ? { x: activeTargetFromProducts.location.x, y: activeTargetFromProducts.location.y + 10 }
-      : { x: userPos.current.x, y: userPos.current.y };
+  const cartPosition = pathPoints[pathIndex] || { x: userPos.current.x, y: userPos.current.y };
 
   const handleMapClick = (e) => {
     if (!mapRef.current) return;
@@ -215,37 +348,20 @@ export default function MapPage() {
           </div>
 
           {/* Path Visualization (Simplified: User -> P1 -> P2...) */}
-          {targetProducts.length > 0 && (
-            <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-              {/* Line from User to First Product */}
-              <line
-                x1={`${userPos.current.x}%`}
-                y1={`${userPos.current.y}%`}
-                x2={`${targetProducts[0].location.x}%`}
-                y2={`${targetProducts[0].location.y}%`}
+          {pathPoints.length > 1 && (
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none z-0"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              <polyline
+                points={pathPoints.map((p) => `${p.x},${p.y}`).join(' ')}
+                fill="none"
                 stroke="#3b82f6"
-                strokeWidth="3"
-                strokeDasharray="5,5"
-                className="opacity-30"
+                strokeWidth="1.8"
+                strokeDasharray="4 3"
+                opacity="0.6"
               />
-              {/* Lines between products */}
-              {targetProducts.map((p, i) => {
-                if (i === targetProducts.length - 1) return null;
-                const next = targetProducts[i + 1];
-                return (
-                  <line
-                    key={i}
-                    x1={`${p.location.x}%`}
-                    y1={`${p.location.y}%`}
-                    x2={`${next.location.x}%`}
-                    y2={`${next.location.y}%`}
-                    stroke="#3b82f6"
-                    strokeWidth="3"
-                    strokeDasharray="5,5"
-                    className="opacity-30"
-                  />
-                );
-              })}
             </svg>
           )}
         </div>

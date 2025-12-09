@@ -26,6 +26,22 @@ export default function ChatPage() {
     navigate('/map', { state: { targetProducts } });
   };
 
+  const handleNavigateSingle = (product) => {
+    if (!product?.location) {
+      console.warn('[ChatPage] 위치 정보 없음 - 길안내 불가', { productId: product?.id, name: product?.name });
+      alert('해당 상품의 위치 정보가 없어 길안내를 제공할 수 없습니다.');
+      return;
+    }
+    console.log('[ChatPage] 위치 안내 모달 → 길안내 시작', {
+      productId: product.id,
+      name: product.name,
+      section: product.section,
+      location: product.location,
+    });
+    handleNavigate(product);
+    setSelectedProduct(null);
+  };
+
   const handleSend = (text = inputText) => {
     if (!text.trim()) return;
 
@@ -242,6 +258,7 @@ export default function ChatPage() {
         <ProductLocationModal
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
+          onNavigate={handleNavigateSingle}
         />
       )}
 
