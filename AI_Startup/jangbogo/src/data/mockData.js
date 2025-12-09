@@ -1,22 +1,28 @@
 export const PRODUCTS = [
-  { id: 1, name: '유기농 우유', price: 4500, category: 'Dairy', location: { x: 20, y: 20 }, section: 'C3', image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=100&q=80' },
-  { id: 2, name: '신선한 사과 (1봉)', price: 8900, category: 'Produce', location: { x: 80, y: 20 }, section: 'A1', image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=100&q=80' },
-  { id: 3, name: '통밀 식빵', price: 3200, category: 'Bakery', location: { x: 20, y: 80 }, section: 'B2', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80' },
-  { id: 4, name: '제주 삼다수 2L', price: 1100, category: 'Beverage', location: { x: 80, y: 80 }, section: 'D4', image: 'https://images.unsplash.com/photo-1564419320461-6870880221ad?auto=format&fit=crop&w=100&q=80' },
-  { id: 5, name: '한우 등심 1++', price: 45000, category: 'Meat', location: { x: 50, y: 20 }, section: 'A2', image: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=100&q=80' },
-  { id: 6, name: '감자칩', price: 2000, category: 'Snack', location: { x: 50, y: 80 }, section: 'D2', image: 'https://plus.unsplash.com/premium_photo-1672753747124-2bd4da9931fa?auto=format&fit=crop&w=800&q=80' },
-  // Tteokbokki Ingredients
-  { id: 7, name: '떡볶이 떡', price: 3500, category: 'Fresh', location: { x: 15, y: 15 }, section: 'A1', image: 'https://images.unsplash.com/photo-1604908176997-1251884b9c31?auto=format&fit=crop&w=100&q=80' },
-  { id: 8, name: '사각 어묵', price: 2000, category: 'Fresh', location: { x: 85, y: 15 }, section: 'A2', image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=100&q=80' },
-  { id: 9, name: '대파', price: 1500, category: 'Produce', location: { x: 80, y: 25 }, section: 'A1', image: 'https://images.unsplash.com/photo-1618888007540-2bdead974bbb?auto=format&fit=crop&w=100&q=80' },
-  { id: 10, name: '고추장', price: 6500, category: 'Condiment', location: { x: 30, y: 50 }, section: 'B1', image: 'https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?auto=format&fit=crop&w=100&q=80' },
-  // Meal Kits
-  { id: 11, name: '떡볶이 밀키트', price: 9900, category: 'MealKit', location: { x: 45, y: 45 }, section: 'C2', image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=100&q=80' },
-  { id: 12, name: '즉석 떡볶이', price: 5500, category: 'Instant', location: { x: 55, y: 85 }, section: 'D1', image: 'https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?auto=format&fit=crop&w=100&q=80' },
-  // Steak Ingredients
-  { id: 13, name: '아스파라거스', price: 4500, category: 'Produce', location: { x: 75, y: 25 }, section: 'A1', image: 'https://images.unsplash.com/photo-1515041219749-b934d9d877ca?auto=format&fit=crop&w=100&q=80' },
-  { id: 14, name: '통마늘', price: 3000, category: 'Produce', location: { x: 70, y: 30 }, section: 'A1', image: 'https://images.unsplash.com/photo-1615477095478-f79bd8fbf256?auto=format&fit=crop&w=100&q=80' },
-  { id: 15, name: '버터', price: 6000, category: 'Dairy', location: { x: 25, y: 45 }, section: 'C1', image: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=100&q=80' },
+  // Dairy / C zone
+  { id: 1, name: '유기농 우유', price: 4500, category: 'Dairy', location: { x: 46, y: 50 }, section: 'C3', image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=100&q=80' },
+  // Produce / A zone
+  { id: 2, name: '신선한 사과 (1봉)', price: 8900, category: 'Produce', location: { x: 20, y: 16 }, section: 'A1', image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=100&q=80' },
+  // Bakery / B zone
+  { id: 3, name: '통밀 식빵', price: 3200, category: 'Bakery', location: { x: 16, y: 62 }, section: 'B2', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80' },
+  // Beverage / D zone
+  { id: 4, name: '제주 삼다수 2L', price: 1100, category: 'Beverage', location: { x: 76, y: 50 }, section: 'D4', image: 'https://images.unsplash.com/photo-1564419320461-6870880221ad?auto=format&fit=crop&w=100&q=80' },
+  // Meat / A2 zone
+  { id: 5, name: '한우 등심 1++', price: 45000, category: 'Meat', location: { x: 70, y: 18 }, section: 'A2', image: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=100&q=80' },
+  // Snack / D zone
+  { id: 6, name: '감자칩', price: 2000, category: 'Snack', location: { x: 84, y: 58 }, section: 'D2', image: 'https://plus.unsplash.com/premium_photo-1672753747124-2bd4da9931fa?auto=format&fit=crop&w=800&q=80' },
+  // Tteokbokki Ingredients (A/A2/B)
+  { id: 7, name: '떡볶이 떡', price: 3500, category: 'Fresh', location: { x: 14, y: 22 }, section: 'A1', image: 'https://images.unsplash.com/photo-1604908176997-1251884b9c31?auto=format&fit=crop&w=100&q=80' },
+  { id: 8, name: '사각 어묵', price: 2000, category: 'Fresh', location: { x: 82, y: 22 }, section: 'A2', image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=100&q=80' },
+  { id: 9, name: '대파', price: 1500, category: 'Produce', location: { x: 32, y: 18 }, section: 'A1', image: 'https://images.unsplash.com/photo-1618888007540-2bdead974bbb?auto=format&fit=crop&w=100&q=80' },
+  { id: 10, name: '고추장', price: 6500, category: 'Condiment', location: { x: 24, y: 48 }, section: 'B1', image: 'https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?auto=format&fit=crop&w=100&q=80' },
+  // Meal Kits / C-D zones
+  { id: 11, name: '떡볶이 밀키트', price: 9900, category: 'MealKit', location: { x: 52, y: 60 }, section: 'C2', image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=100&q=80' },
+  { id: 12, name: '즉석 떡볶이', price: 5500, category: 'Instant', location: { x: 80, y: 66 }, section: 'D1', image: 'https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?auto=format&fit=crop&w=100&q=80' },
+  // Steak Ingredients / A & C zones
+  { id: 13, name: '아스파라거스', price: 4500, category: 'Produce', location: { x: 26, y: 26 }, section: 'A1', image: 'https://images.unsplash.com/photo-1515041219749-b934d9d877ca?auto=format&fit=crop&w=100&q=80' },
+  { id: 14, name: '통마늘', price: 3000, category: 'Produce', location: { x: 18, y: 28 }, section: 'A1', image: 'https://images.unsplash.com/photo-1615477095478-f79bd8fbf256?auto=format&fit=crop&w=100&q=80' },
+  { id: 15, name: '버터', price: 6000, category: 'Dairy', location: { x: 44, y: 64 }, section: 'C1', image: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=100&q=80' },
 ];
 
 export const PAST_PURCHASES = [
