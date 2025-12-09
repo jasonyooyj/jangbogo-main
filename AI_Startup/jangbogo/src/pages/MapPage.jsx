@@ -68,6 +68,37 @@ export default function MapPage() {
     y: clampPct(cell.cy * GRID_STEP_SIZE),
   });
 
+  // 목적지가 섹션 내부에 있을 때, 클릭/지정 지점과 가장 가까운 섹션 외곽선으로 스냅
+  const snapToSectionEdge = (destination) => {
+    const section = findSectionByPoint(destination);
+    if (!section) return destination;
+    const { rect } = section;
+    const candidates = [
+      { x: rect.x1, y: clampPct(destination.y), label: 'left' },
+      { x: rect.x2, y: clampPct(destination.y), label: 'right' },
+      { x: clampPct(destination.x), y: rect.y1, label: 'top' },
+      { x: clampPct(destination.x), y: rect.y2, label: 'bottom' },
+    ];
+    const base = destination;
+    const pick = candidates.reduce(
+      (best, cur) => {
+        const dist = Math.hypot(base.x - cur.x, base.y - cur.y);
+        return dist < best.dist ? { point: cur, dist } : best;
+      },
+      { point: destination, dist: Number.POSITIVE_INFINITY }
+    );
+    const snapped = { x: clampPct(pick.point.x), y: clampPct(pick.point.y) };
+    if (snapped.x !== destination.x || snapped.y !== destination.y) {
+      console.log('[MapPage] 목적지 스냅 (섹션 외곽)', {
+        section: section.name,
+        from: destination,
+        snapped,
+        edge: pick.point.label,
+      });
+    }
+    return snapped;
+  };
+
   const findPath = (startPoint, endPoint) => {
     const allowedSection = findSectionByPoint(endPoint);
     const start = toCell(startPoint);
@@ -138,14 +169,20 @@ export default function MapPage() {
     const arrivals = [];
 
     targets.forEach((t, idx) => {
-      const dest = t.location || t; // customTarget는 location이 없음
-      const segment = findPath(cursor, dest);
-      const usable = segment.length > 0 ? segment : [cursor, dest];
+      const rawDest = t.location || t; // customTarget는 location이 없음
+      const snappedDest = snapToSectionEdge(rawDest);
+      const segment = findPath(cursor, snappedDest);
+      const usable = segment.length > 0 ? segment : [cursor, snappedDest];
       points.push(...usable.slice(1));
       arrivals.push(points.length - 1);
-      cursor = dest;
+      cursor = snappedDest;
       if (segment.length === 0) {
-        console.warn('[MapPage] 경로 계산 실패: 섹션을 우회하지 못해 직선 사용', { target: t.name || 'custom', index: idx });
+        console.warn('[MapPage] 경로 계산 실패: 섹션을 우회하지 못해 직선 사용', {
+          target: t.name || 'custom',
+          index: idx,
+          rawDest,
+          snappedDest,
+        });
       }
     });
 
